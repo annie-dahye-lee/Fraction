@@ -8,12 +8,10 @@ public class FractionDriver {
          Fraction f2 = new Fraction(2, 3);
          System.out.println(f2);
          
-         System.out.println(Fraction.mult(f1, f2));
+         System.out.println(Fraction.mult(f1, f2));                  
          
          
-         
-         
-         
+        
          
          
     }

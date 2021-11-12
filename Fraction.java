@@ -37,15 +37,15 @@ public class Fraction {
      * @param f a String of the form "n/d" that represents a fraction.
      */
     public Fraction(String f) {
-        int fwdIndex = f.indexOf("/");
-        String numString = f.substring(0, fwdIndex);
-        String denString = f.substring(fwdIndex+1);
-        num = Integer.parseInt(numString);
-        int d = Integer.parseInt(denString);
-        setDenominator(d);
+        int slash = f.indexOf("/");
+        String numString = f.substring(0, slash);
+        String denString = f.substring(slash + 1);
+        this.num = Integer.parseInt(numString); // changing numString into int
+        int d = Integer.parseInt(denString); // changing denString into int
+        setDenominator(d); // den if 0 check
     }
     /**
-     * Copy Constructor. Sets numerator and denominator to the parameter fraction's
+     * Copy Constructor. Sets numerator and denominator instances to the parameter fraction's
      * numerator and denominator
      * 
      * @param f the Fraction object to copy.
@@ -84,9 +84,9 @@ public class Fraction {
      */ 
     public void setDenominator(int d) {
         if (d != 0) {
-            den = d;
+            this.den = d;
         } else {
-            den = 1;
+            this.den = 1;
             System.out.println("Error: Attempted to make denominator zero!");
         }
     }
@@ -98,10 +98,10 @@ public class Fraction {
         return num +"/" + den;
     }
     
-    /*public static Fraction mult(Fraction a, Fraction b) {
+    public static Fraction staticMult(Fraction a, Fraction b) {
         Fraction answer = new Fraction ((a.num * b.num), (a.den * b.den));
         return answer;
-    }*/
+    }
     
    /*
     * Mutator method for multiplying this fraction (object you call with) with a
@@ -109,8 +109,83 @@ public class Fraction {
     */   
     public void mult(Fraction a) {
         this.num *= a.num; //this.num and this.den is object you call with
-        this.den *= a.den;
+        this.den *= a.den;        
+    }
+    
+    /*
+     * Helper method to find the GCF of given numerator and denominator parameters using Euclid's algorithm
+     * @ param a Fraction's numerator
+     * @ param b Fraction's denominator
+     */
+    
+    /*
+     * Euclid's algorithm: repeatedly substracting smaller (Math.min) number from larger (Math.max) number. 
+     * Then, subtract smallest num with second largest num in equatioM. This is to get the GCF
+     */    
+    public int GCF(int a, int b) {
         
+        if (a == 0 || b == 0) return 1; 
         
+        while (a != b) {
+            if (a > b) a -= b;
+            else b -= a;
+        }
+        return a;
+    }
+    
+    /*
+     * Mutator method to reduce fraction into lowest values
+     * to reduce, divide num and den by the GCF
+     */
+    public void reduce() {
+        this.num /= GCF(num, den);
+        this.den /= GCF(num, den);
+    }
+    
+    public static Fraction mult (Fraction a, Fraction b) {
+       int newNum = a.num * b.num;
+       int newDen = a.den * b.den;
+       
+       Fraction answer = new Fraction (newNum, newDen);
+       answer.reduce();
+       
+       return answer;
+    }
+    
+    public static Fraction div (Fraction a, Fraction b) {
+       
+      if (a.den == 0 || b.den == 0) {  
+         System.out.print("Error: Denominator was set to 0.");
+         Fraction answer = new Fraction (a.num * b.den, 1);
+      }    
+          
+      int newNum = a.num * b.den;
+      int newDen = a.den * b.num; 
+
+      Fraction answer = new Fraction (newNum, newDen);
+      answer.reduce();
+       
+      return answer; 
+    }
+    
+    public static Fraction add (Fraction a, Fraction b) {
+         int newNum = a.num + b.num;
+         int newDen = a.den + b.den; 
+
+         Fraction answer = new Fraction (newNum, newDen);
+         answer.reduce();
+       
+         return answer;
+    }
+    
+     public static Fraction subtract (Fraction a, Fraction b) {
+         int newNum = a.num - b.num;
+         int newDen = Math.max(a.den, b.den) - Math.min(a.den, b.den);
+         if (newDen == 0) newDen = 1;
+
+         Fraction answer = new Fraction (newNum, newDen);
+         answer.reduce();
+       
+         return answer;
     }
 }
